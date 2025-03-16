@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract tgWebAppData from Iframe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        input, button {
+            margin-top: 10px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .output-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Querry Id Extractor</h1>
+    <label for="iframeUrl">Enter Iframe URL:</label>
+    <input type="text" id="iframeUrl" placeholder="Enter the Iframe URL here">
+    <button id="extractButton">Extract tgWebAppData</button>
+    <button id="copyButton" style="margin-left: 10px;">Copy to Clipboard</button>
+
+    <div class="output-container">
+        <h2>Extracted Data</h2>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        document.getElementById('extractButton').onclick = function() {
+            const url = document.getElementById('iframeUrl').value;
+
+            try {
+                const fragment = url.split('#')[1];
+                if (!fragment) throw new Error('No data found in URL.');
+
+                const params = new URLSearchParams(fragment);
+                const tgWebAppData = params.get('tgWebAppData');
+
+                if (!tgWebAppData) throw new Error('tgWebAppData not found.');
+
+                document.getElementById('output').textContent = tgWebAppData;
+            } catch (error) {
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+            }
+        };
+
+        document.getElementById('copyButton').onclick = function() {
+            const outputText = document.getElementById('output').textContent;
+            if (outputText) {
+                navigator.clipboard.writeText(outputText).then(() => {
+                    alert('Data copied to clipboard!');
+                }).catch(err => {
+                    alert('Failed to copy: ' + err);
+                });
+            } else {
+                alert('No data to copy!');
+            }
+        };
+    </script>
+</body>
+</html>
